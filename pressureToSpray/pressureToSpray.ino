@@ -27,10 +27,10 @@ void loop(void)
   pressureKPA -= 100.0;
   pressureKPA *= 1000.0; 
 
-  // Serial.println(pressureKPA);
+   Serial.println(pressureKPA);
 
 
-  if(pressureKPA > 1800){
+  if(pressureKPA > 2200){
 
     // Serial.print(pressureKPA);
 
