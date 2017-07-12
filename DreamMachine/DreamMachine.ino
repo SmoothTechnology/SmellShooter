@@ -30,6 +30,7 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   
+  //TODO, have it reconnect on loop if failure
   myPressure.begin(); // Get sensor online
 
   // Configure the sensor
@@ -58,7 +59,7 @@ void loop() {
   // Serial.print("\t");
   midiTemperature = getScaledTemperature();
   // Serial.println();
-  Serial.println(midiTemperature);
+//  Serial.println(midiTemperature);
 
 
    //fill to scaled height
@@ -71,7 +72,6 @@ void loop() {
 
       float pressureVelocity = abs( float( midiPressure - prevPressure ) / ( 52.0 ) );
       Serial.println(pressureVelocity*100);
-      
       prevTime = curTime;
       prevPressure = midiPressure;
     }
@@ -96,7 +96,7 @@ int getScaledPressure(){
   float pascals = myPressure.readPressure();
   int pressure = pascals - 100000;
   
-  // Serial.print(pressure);
+   Serial.println(pascals);
  
   int minPressure = map( analogRead(POTPIN), 0, 1023, 1500, 4000 );
   int maxPressure = minPressure + 6000;
