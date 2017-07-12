@@ -47,6 +47,7 @@ int prevPressure = -1;
 int prevTemp = -1;
 
 int midiPressure = 0;
+int setIntegral = 0;
 int midiPressureVelocity = 0;
 int midiTemperature = 0;
 
@@ -55,15 +56,15 @@ unsigned long prevTime = 0;
 
 void loop() {
 
-  midiPressure = getScaledPressure();
+  midiPressure = getScaledPressure(setIntegral);
   // Serial.print("\t");
   midiTemperature = getScaledTemperature();
   // Serial.println();
 //  Serial.println(midiTemperature);
 
-
    //fill to scaled height
-   colorFill(strip.Color(255,0,0), midiPressure);
+   //colorFill(strip.Color(255,0,0), midiPressure);
+   colorFill(strip.Color(255,0,0), setIntegral);
 
   //Only send on value change
 
@@ -99,7 +100,7 @@ float sumVal = 0;
 unsigned long samplePeriod = 20;
 unsigned long lastTime = 0;
 
-int getScaledPressure(){
+int getScaledPressure(int &integral){
   
   
   float pascals = myPressure.readPressure();
@@ -115,13 +116,18 @@ int getScaledPressure(){
 
     if(sumVal < 0) 
       sumVal = 0;
+    else if(sumVal > 60000)
+      sumVal = 60000;
   }
-  
+
+  integral = constrain(sumVal, 0, 50000);
+  integral = map(integral, 0, 50000, 0, 127);
+
   Serial.print("SumVal: ");
-  Serial.print(sumVal);
-   Serial.print("   Pascals: ");
-   Serial.println(pascals);
- 
+  Serial.print(integral);
+  Serial.print("   Pascals: ");
+  Serial.println(pascals);
+
   int minPressure = map( analogRead(POTPIN), 0, 1023, 1500, 4000 );
   int maxPressure = minPressure + 6000;
 
