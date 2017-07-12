@@ -66,15 +66,18 @@ void loop() {
    colorFill(strip.Color(255,0,0), midiPressure);
 
   //Only send on value change
-  if (midiPressure != prevPressure) {
-      curTime = millis();
-      usbMIDI.sendControlChange(CC_PRESSURE, midiPressure, MIDI_CHANNEL);
 
-      float pressureVelocity = abs( float( midiPressure - prevPressure ) / ( 52.0 ) );
-      Serial.println(pressureVelocity*100);
-      prevTime = curTime;
-      prevPressure = midiPressure;
-    }
+  // CAUSES ISSUES
+  if (midiPressure != prevPressure) {
+    curTime = millis();
+    usbMIDI.sendControlChange(CC_PRESSURE, midiPressure, MIDI_CHANNEL);
+
+    float pressureVelocity = abs( float( midiPressure - prevPressure ) / ( 52.0 ) );
+    //Serial.println(pressureVelocity*100);
+    prevTime = curTime;
+    prevPressure = midiPressure;
+  }
+  // CAUSES ISSUES
 
   if (midiTemperature != prevTemp) {
       usbMIDI.sendControlChange(CC_TEMPERATURE, midiTemperature, MIDI_CHANNEL);
@@ -90,12 +93,33 @@ void loop() {
 
 }
 
+int threshold = 2000;
+int decrementVal = 3000;
+float sumVal = 0;
+unsigned long samplePeriod = 20;
+unsigned long lastTime = 0;
+
 int getScaledPressure(){
   
   
   float pascals = myPressure.readPressure();
   int pressure = pascals - 100000;
+
+  if( (millis() - lastTime > samplePeriod)  )
+  {
+    lastTime = millis();
+    if((pressure > threshold))
+      sumVal += (pressure - threshold);
+
+    sumVal = sumVal - decrementVal;
+
+    if(sumVal < 0) 
+      sumVal = 0;
+  }
   
+  Serial.print("SumVal: ");
+  Serial.print(sumVal);
+   Serial.print("   Pascals: ");
    Serial.println(pascals);
  
   int minPressure = map( analogRead(POTPIN), 0, 1023, 1500, 4000 );
