@@ -37,7 +37,52 @@ uint32_t Wheel(byte WheelPos) {
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
+void OnNoteOn(byte channel, byte note, byte velocity)
+{
+  colorFill(strip.Color(0,0,0), 127);
+
+  if(velocity == 127)
+  {
+    for(int i = 0; i < 100; i+= 5)
+    {
+        colorFill(strip.Color(i,i,i), 127);
+    }
+
+    for(int i = 100; i > 0; i-= 5)
+    {
+      colorFill(strip.Color(i,i,i), 127);
+    }
+  }
+  else
+  {
+    velocity = map(velocity, 0, 126, 0, 255);
+    uint32_t myColor = Wheel(velocity);
+    strip.setBrightness(0);
+    colorFill( myColor, 127);
+
+    for(int i = 0; i < 100; i+= 5)
+    {
+      int curBrightness = map(i, 0, 100, 0, 255);
+      colorFill( myColor, 127);
+      strip.setBrightness(curBrightness);
+    }
+
+    for(int i = 100; i > 0; i-= 5)
+    {
+      int curBrightness = map(i, 0, 100, 0, 255);
+      colorFill( myColor, 127);
+      strip.setBrightness(curBrightness);
+    }
+
+    strip.setBrightness(255);
+  }
+  
+}
+
 void setup() {
+
+  usbMIDI.setHandleNoteOn(OnNoteOn);
+
   Serial.begin(9600);
   Serial.println("Dream Machine!");
   
