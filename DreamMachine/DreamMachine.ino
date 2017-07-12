@@ -22,6 +22,20 @@ MPL3115A2 myPressure;
 #define MIDI_CHANNEL 1
 #define CC_PRESSURE 1
 #define CC_TEMPERATURE 2
+#define CC_INTEGRAL 3
+
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
 
 void setup() {
   Serial.begin(9600);
@@ -45,11 +59,13 @@ void setup() {
 
 int prevPressure = -1;
 int prevTemp = -1;
+int prevIntegral = 0;
 
 int midiPressure = 0;
 int setIntegral = 0;
 int midiPressureVelocity = 0;
 int midiTemperature = 0;
+
 
 unsigned long curTime = 0;
 unsigned long prevTime = 0;
@@ -64,7 +80,13 @@ void loop() {
 
    //fill to scaled height
    //colorFill(strip.Color(255,0,0), midiPressure);
-   colorFill(strip.Color(255,0,0), setIntegral);
+
+   colorFill(Wheel(map(setIntegral, 0, 127, 20, 0)), setIntegral);
+
+   if(setIntegral == 127)
+   {
+    sparkleSpecial();
+   }
 
   //Only send on value change
 
@@ -79,6 +101,12 @@ void loop() {
     prevPressure = midiPressure;
   }
   // CAUSES ISSUES
+
+  if(setIntegral != prevIntegral)
+  {
+    usbMIDI.sendControlChange(CC_INTEGRAL, setIntegral, MIDI_CHANNEL);
+    prevIntegral = setIntegral;
+  }
 
   if (midiTemperature != prevTemp) {
       usbMIDI.sendControlChange(CC_TEMPERATURE, midiTemperature, MIDI_CHANNEL);
@@ -170,6 +198,13 @@ void colorFill(uint32_t c, uint8_t val) {
       if(!random(20)) setLEDColor(i,strip.Color(255,123,0));
         else setLEDColor(i,0);
     }
+  }
+    strip.show();
+}
+
+void sparkleSpecial() {
+  for(uint16_t i=0; i<led_height; i++) {
+      if(!random(6)) setLEDColor(i,strip.Color(0,random(255),random(255)));
   }
     strip.show();
 }
