@@ -6,7 +6,9 @@
   #include <avr/power.h>
 #endif
 
-
+///////////////////////////////////////////////////
+//////////////////// BEGIN OPTIONS ///////////////
+///////////////////////////////////////////////////
 #define LEDPIN 17
 int led_height = 75;
 
@@ -18,13 +20,12 @@ int led_height = 75;
 // Control Pressure Inflate and Deflate
 int threshold = 2000; // Pressure must exceed this value to inflate
 int decrementVal = 3000; // Speed of pressure deflate
+///////////////////////////////////////////////////
+//////////////////// END OPTIONS //////////////////
+///////////////////////////////////////////////////
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(led_height * 4, LEDPIN, NEO_GRB + NEO_KHZ800);
 
-// Power by connecting Vin to 3-5V, GND to GND
-// Uses I2C - connect SCL to the SCL pin, SDA to SDA pin
-
-//Create an instance of the object
 MPL3115A2 myPressure;
 
 #define POTPIN A0
@@ -49,43 +50,36 @@ uint32_t Wheel(byte WheelPos) {
 void OnNoteOn(byte channel, byte note, byte velocity)
 {
   colorFill(strip.Color(0,0,0), 127);
+  uint32_t myColor = 0;
 
   if(velocity == 127)
   {
-    for(int i = 0; i < 100; i+= 5)
-    {
-        colorFill(strip.Color(i,i,i), 127);
-    }
-
-    for(int i = 100; i > 0; i-= 5)
-    {
-      colorFill(strip.Color(i,i,i), 127);
-    }
+    myColor = strip.Color(100, 100, 100);
   }
   else
   {
     velocity = map(velocity, 0, 126, 0, 255);
-    uint32_t myColor = Wheel(velocity);
-    strip.setBrightness(0);
-    colorFill( myColor, 127);
-
-    for(int i = 0; i < 100; i+= 5)
-    {
-      int curBrightness = map(i, 0, 100, 0, 255);
-      colorFill( myColor, 127);
-      strip.setBrightness(curBrightness);
-    }
-
-    for(int i = 100; i > 0; i-= 5)
-    {
-      int curBrightness = map(i, 0, 100, 0, 255);
-      colorFill( myColor, 127);
-      strip.setBrightness(curBrightness);
-    }
-
-    strip.setBrightness(255);
+    myColor = Wheel(velocity);
   }
-  
+
+  strip.setBrightness(0);
+  colorFill( myColor, 127);
+
+  for(int i = 0; i < 100; i+= 5)
+  {
+    int curBrightness = map(i, 0, 100, 0, 255);
+    colorFill( myColor, 127);
+    strip.setBrightness(curBrightness);
+  }
+
+  for(int i = 100; i > 0; i-= 5)
+  {
+    int curBrightness = map(i, 0, 100, 0, 255);
+    colorFill( myColor, 127);
+    strip.setBrightness(curBrightness);
+  }
+
+  strip.setBrightness(255);
 }
 
 void setup() {
@@ -98,19 +92,16 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   
-  //TODO, have it reconnect on loop if failure
   myPressure.begin(); // Get sensor online
 
   // Configure the sensor
-  //myPressure.setModeAltimeter(); // Measure altitude above sea level in meters
   myPressure.setModeBarometer(); // Measure pressure in Pascals from 20 to 110 kPa
-  
   myPressure.setOversampleRate(4); // Set Oversample to the recommended 128
   myPressure.enableEventFlags(); // Enable all three pressure and temp event flags 
   
 }
 
-
+// State Variables
 int prevPressure = -1;
 int prevTemp = -1;
 int prevIntegral = 0;
@@ -120,17 +111,13 @@ int setIntegral = 0;
 int midiPressureVelocity = 0;
 int midiTemperature = 0;
 
-
 unsigned long curTime = 0;
 unsigned long prevTime = 0;
 
 void loop() {
 
   midiPressure = getScaledPressure(setIntegral);
-  // Serial.print("\t");
   midiTemperature = getScaledTemperature();
-  // Serial.println();
-//  Serial.println(midiTemperature);
 
    //fill to scaled height
    //colorFill(strip.Color(255,0,0), midiPressure);
@@ -142,19 +129,14 @@ void loop() {
     sparkleSpecial();
    }
 
-  //Only send on value change
-
-  // CAUSES ISSUES
   if (midiPressure != prevPressure) {
     curTime = millis();
     usbMIDI.sendControlChange(CC_PRESSURE, midiPressure, MIDI_CHANNEL);
 
     float pressureVelocity = abs( float( midiPressure - prevPressure ) / ( 52.0 ) );
-    //Serial.println(pressureVelocity*100);
     prevTime = curTime;
     prevPressure = midiPressure;
   }
-  // CAUSES ISSUES
 
   if(setIntegral != prevIntegral)
   {
@@ -167,11 +149,7 @@ void loop() {
       prevTemp = midiTemperature;
     }
 
-  
-  // MIDI Controllers should discard incoming MIDI messages.
-  // http://forum.pjrc.com/threads/24179-Teensy-3-Ableton-Analog-CC-causes-midi-crash
   while (usbMIDI.read()) {
-    // ignore incoming messages
   }
 
 }
@@ -223,8 +201,6 @@ int getScaledTemperature(){
   float tempF = myPressure.readTempF();
   int minTemp = 65;
   int maxTemp = 95;
-
-//  Serial.print(tempC);
 
   if(tempF < minTemp)  tempF = minTemp;
   if(tempF > maxTemp)  tempF = maxTemp;
