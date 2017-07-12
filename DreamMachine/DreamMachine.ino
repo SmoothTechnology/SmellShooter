@@ -10,6 +10,15 @@
 #define LEDPIN 17
 int led_height = 75;
 
+#define SPARKLE_COLOR strip.Color(255,123,0)
+#define MAX_PRESSURE_COLOR strip.Color(0,random(255),random(255))
+#define MAX_INFLATE_COLOR 20
+#define MIN_INFLATE_COLOR 0
+
+// Control Pressure Inflate and Deflate
+int threshold = 2000; // Pressure must exceed this value to inflate
+int decrementVal = 3000; // Speed of pressure deflate
+
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(led_height * 4, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 // Power by connecting Vin to 3-5V, GND to GND
@@ -126,7 +135,7 @@ void loop() {
    //fill to scaled height
    //colorFill(strip.Color(255,0,0), midiPressure);
 
-   colorFill(Wheel(map(setIntegral, 0, 127, 20, 0)), setIntegral);
+   colorFill(Wheel(map(setIntegral, 0, 127, MAX_INFLATE_COLOR, MIN_INFLATE_COLOR)), setIntegral);
 
    if(setIntegral == 127)
    {
@@ -167,8 +176,6 @@ void loop() {
 
 }
 
-int threshold = 2000;
-int decrementVal = 3000;
 float sumVal = 0;
 unsigned long samplePeriod = 20;
 unsigned long lastTime = 0;
@@ -240,7 +247,7 @@ void colorFill(uint32_t c, uint8_t val) {
     //Sparkle that biatch
     else 
     {
-      if(!random(20)) setLEDColor(i,strip.Color(255,123,0));
+      if(!random(20)) setLEDColor(i,SPARKLE_COLOR);
         else setLEDColor(i,0);
     }
   }
@@ -249,7 +256,7 @@ void colorFill(uint32_t c, uint8_t val) {
 
 void sparkleSpecial() {
   for(uint16_t i=0; i<led_height; i++) {
-      if(!random(6)) setLEDColor(i,strip.Color(0,random(255),random(255)));
+      if(!random(6)) setLEDColor(i,MAX_PRESSURE_COLOR);
   }
     strip.show();
 }
