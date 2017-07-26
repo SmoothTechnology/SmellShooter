@@ -17,31 +17,33 @@
 // #define MAX_INFLATE_COLOR 20
 // #define MIN_INFLATE_COLOR 0
 
-// SET LED HEIGHT, COLOR, AND CHANGE USB NAME
-#define ID_3
+// #define TEST_LEDS
 
-#ifdef ID_1
+// SET LED HEIGHT, COLOR, AND CHANGE USB NAME
+#define ID_5
+
+#ifdef ID_1 //GOOD
     //1
     #define MAX_INFLATE_COLOR myColor(50,100,100)
     #define MIN_INFLATE_COLOR myColor(20,50,25)
     int led_height = 54;
     #define MIDI_CHANNEL 1
 #endif    
-#ifdef ID_2
+#ifdef ID_2 //GOOD, update led length in doc to 61
     //2
     #define MAX_INFLATE_COLOR myColor(70,120,20)
     #define MIN_INFLATE_COLOR myColor(30,50,20)
-    int led_height = 60;
+    int led_height = 61;
     #define MIDI_CHANNEL 2
 #endif    
-#ifdef ID_3
-    //3
-    #define MAX_INFLATE_COLOR myColor(0,100,0)
-    #define MIN_INFLATE_COLOR myColor(0,50,0)
-    int led_height = 61;
-    #define MIDI_CHANNEL 3
-#endif    
-#ifdef ID_4
+// #ifdef ID_3 // update led_length in doc to 60
+//     //3
+//     #define MAX_INFLATE_COLOR myColor(0,100,0)
+//     #define MIN_INFLATE_COLOR myColor(0,50,0)
+//     int led_height = 60;
+//     #define MIDI_CHANNEL 3
+// #endif    
+#ifdef ID_4 
     //4
     #define MAX_INFLATE_COLOR myColor(150,0,0)
     #define MIN_INFLATE_COLOR myColor(50,0,0)
@@ -55,14 +57,14 @@
     int led_height = 70;
     #define MIDI_CHANNEL 5
 #endif    
-#ifdef ID_6
+#ifdef ID_6 //GOOD
     //6
     #define MAX_INFLATE_COLOR myColor(40,15,0)
     #define MIN_INFLATE_COLOR myColor(40,15,0)
     int led_height = 70;
     #define MIDI_CHANNEL 6
-#endif    
-#ifdef ID_7
+#endif     
+#ifdef ID_7 //GOOD
     // 7 - B HOPE
     #define MAX_INFLATE_COLOR myColor(125,65,0)
     #define MIN_INFLATE_COLOR myColor(80,40,0)
@@ -76,7 +78,7 @@
     int led_height = 76;
     #define MIDI_CHANNEL 8
 #endif    
-#ifdef ID_9
+#ifdef ID_9 //GOOD
     //9
     #define MAX_INFLATE_COLOR myColor(125,60,85)
     #define MIN_INFLATE_COLOR myColor(80,40,60)
@@ -92,7 +94,7 @@
 #endif
 
 // Control Pressure Inflate and Deflate
-int threshold = 500; // Pressure must exceed this value to inflate
+int threshold = 5000; // Pressure must exceed this value to inflate
 int decrementVal = 2500; // Speed of pressure deflate
 ///////////////////////////////////////////////////
 //////////////////// END OPTIONS //////////////////
@@ -164,6 +166,25 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   
+  Serial.println(led_height);
+
+  #ifdef TEST_LEDS
+
+  while(true){
+    for(int i = 0; i < led_height; i++){
+      setLEDColor(i, strip.Color(25,0,0));
+      delay(50);
+      strip.show();
+    }
+    for(int i = 0; i < led_height; i++){
+      setLEDColor(i, strip.Color(25,25,25));
+      delay(50);
+      strip.show();
+    }
+  }
+
+  #endif
+
   myPressure.begin(); // Get sensor online
 
   // Configure the sensor
