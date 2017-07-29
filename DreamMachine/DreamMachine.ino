@@ -36,13 +36,13 @@
     int led_height = 61;
     #define MIDI_CHANNEL 2
 #endif    
-// #ifdef ID_3 // update led_length in doc to 60
-//     //3
-//     #define MAX_INFLATE_COLOR myColor(0,100,0)
-//     #define MIN_INFLATE_COLOR myColor(0,50,0)
-//     int led_height = 60;
-//     #define MIDI_CHANNEL 3
-// #endif    
+#ifdef ID_3 // update led_length in doc to 60
+    //3
+    #define MAX_INFLATE_COLOR myColor(0,100,0)
+    #define MIN_INFLATE_COLOR myColor(0,50,0)
+    int led_height = 60;
+    #define MIDI_CHANNEL 3
+#endif    
 #ifdef ID_4 
     //4
     #define MAX_INFLATE_COLOR myColor(150,0,0)
@@ -59,15 +59,17 @@
 #endif    
 #ifdef ID_6 //GOOD
     //6
-    #define MAX_INFLATE_COLOR myColor(40,15,0)
-    #define MIN_INFLATE_COLOR myColor(40,15,0)
+    // #define MAX_INFLATE_COLOR myColor(40,15,0)
+    // #define MIN_INFLATE_COLOR myColor(40,15,0)
+    #define MAX_INFLATE_COLOR myColor(10,100,40)
+    #define MIN_INFLATE_COLOR myColor(10,100,40)
     int led_height = 70;
     #define MIDI_CHANNEL 6
 #endif     
 #ifdef ID_7 //GOOD
     // 7 - B HOPE
-    #define MAX_INFLATE_COLOR myColor(125,65,0)
-    #define MIN_INFLATE_COLOR myColor(80,40,0)
+    #define MAX_INFLATE_COLOR myColor(125,60,85)
+    #define MIN_INFLATE_COLOR myColor(80,40,60)
     int led_height = 75;
     #define MIDI_CHANNEL 7
 #endif    
@@ -80,8 +82,8 @@
 #endif    
 #ifdef ID_9 //GOOD
     //9
-    #define MAX_INFLATE_COLOR myColor(125,60,85)
-    #define MIN_INFLATE_COLOR myColor(80,40,60)
+    #define MAX_INFLATE_COLOR myColor(125,65,0)
+    #define MIN_INFLATE_COLOR myColor(80,40,0)
     int led_height = 93;
     #define MIDI_CHANNEL 9
 #endif    
@@ -208,6 +210,7 @@ unsigned long curTime = 0;
 unsigned long prevTime = 0;
 
 void loop() {
+  threshold = map( analogRead(POTPIN), 0, 1023, 3000, 10000 );
 
   midiPressure = getScaledPressure(setIntegral);
 
@@ -274,7 +277,8 @@ int getScaledPressure(int &integral){
   Serial.print("   Pascals: ");
   Serial.println(pascals);
 
-  int minPressure = map( analogRead(POTPIN), 0, 1023, 1500, 4000 );
+  int minPressure = 2000;
+  // int minPressure = map( analogRead(POTPIN), 0, 1023, 1500, 4000 );
   int maxPressure = minPressure + 6000;
 
   if(pressure < minPressure)  pressure = minPressure;

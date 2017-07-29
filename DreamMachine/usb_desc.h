@@ -337,12 +337,69 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT6_CONFIG	ENDPOINT_TRANSIMIT_ONLY
 
 #elif defined(USB_MIDI)
-  #define VENDOR_ID		0x16C0
   #define PRODUCT_ID		0x0485
   #define MANUFACTURER_NAME	{'T','e','e','n','s','y','d','u','i','n','o'}
-  #define MANUFACTURER_NAME_LEN	11
-  #define PRODUCT_NAME		{'7', ' ', 'T','e','e','n','s','y',' ','M','I','D','I'}
-  #define PRODUCT_NAME_LEN	13
+  #define MANUFACTURER_NAME_LEN 11
+  /////////////////////////////////////////////////////////////
+//CHANGE THESE THREE LINES OF CODE TO CHANGE MIDI NAME!!!!!
+/////////////////////////////////////////////////////////////
+  #define ID_5
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+  #ifdef ID_1
+    #define VENDOR_ID   0x16D0
+    #define PRODUCT_NAME    {'1',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_2
+    #define VENDOR_ID   0x16D1
+    #define PRODUCT_NAME    {'2',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_3
+    #define VENDOR_ID   0x16D2
+    #define PRODUCT_NAME    {'3',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_4
+    #define VENDOR_ID   0x16D3
+    #define PRODUCT_NAME    {'4',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_5
+    #define VENDOR_ID   0x16D4
+    #define PRODUCT_NAME    {'5',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_6
+    #define VENDOR_ID   0x16D5
+    #define PRODUCT_NAME    {'6',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_7
+    #define VENDOR_ID   0x16D6
+    #define PRODUCT_NAME    {'7',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_8
+    #define VENDOR_ID   0x16D7
+    #define PRODUCT_NAME    {'8',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_9
+    #define VENDOR_ID   0x16D8
+    #define PRODUCT_NAME    {'9',' ','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  #ifdef ID_10
+    #define VENDOR_ID   0x16D9
+    #define PRODUCT_NAME    {'1','0','T','e','e','n','s','y',' ','M','I','D','I'}
+    #define PRODUCT_NAME_LEN  13
+  #endif
+  // #define VENDOR_ID    0x16C0
+  // #define PRODUCT_NAME		{'7', ' ', 'T','e','e','n','s','y',' ','M','I','D','I'}
+  // #define PRODUCT_NAME_LEN	13
   #define EP0_SIZE		64
   #define NUM_ENDPOINTS         4
   #define NUM_USB_BUFFERS	16
@@ -372,7 +429,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
 /////////////////////////////////////////////////////////////
 //CHANGE THESE THREE LINES OF CODE TO CHANGE MIDI NAME!!!!!
 /////////////////////////////////////////////////////////////
-  #define ID_5
+  // #define ID_3
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
